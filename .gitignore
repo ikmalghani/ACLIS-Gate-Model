@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+
+# Local secrets / environment
+.env
+.env.*
+!.env.example
+
+# Common generated binaries
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Datasets and dataset archives
+*/leaf_noleaf_dataset/
+*/leaf_pest_others_dataset/
+*/dataset/
+*/datasets/
+*.zip
