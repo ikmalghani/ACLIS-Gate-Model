@@ -1,0 +1,9 @@
+numpy
+pillow
+matplotlib
+# Use CUDA 12.1 wheels — this machine's NVIDIA driver is too old for default PyPI cu130.
+#   pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
+torch==2.5.1
+torchvision==0.20.1
+tensorflow==2.20.0
+tf-keras==2.20.1

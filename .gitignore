@@ -51,7 +51,9 @@ dist/
 
 # Datasets and dataset archives
 */leaf_noleaf_dataset/
+*/leaf_nonleaf_dataset/
 */leaf_pest_others_dataset/
+*/leaf_gate_output_alt/
 */dataset/
 */datasets/
 *.zip

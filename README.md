@@ -6,6 +6,7 @@ Repository for ACLIS gate models and supporting training / deployment assets.
 
 - `Leaf Gate Model/` for the leaf vs not-leaf gate
 - `Leaf+Pest Gate Model/` for the leaf vs pest/other gate
+- `Better Gate Model/` for the PlantVillage-balanced leaf/non-leaf dataset, local alt trainer, INT8 TFLite, and `emit_better_gate_c_from_tflite.py` / `codegen_better_gate_c.py` (installs 2-class `leaf_gate_*` C into `ACLIS_IKMAL`)
 
 ## Notes
 
