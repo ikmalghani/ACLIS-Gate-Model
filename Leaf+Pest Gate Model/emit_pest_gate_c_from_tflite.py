@@ -10,12 +10,12 @@ Keeps the `leaf_gate_*` C API so ACLIS main.cpp / .cproject stay compatible,
 but installs 3-class weights + macros into ACLIS.
 
 Output:
-  Ikmal/ACLIS/Src/TinyEngine/codegen_leaf_gate/
-  Ikmal/ACLIS/Inc/leaf_gate_nn.h
+  ACLIS_IKMAL/Src/TinyEngine/codegen_leaf_gate/
+  ACLIS_IKMAL/Inc/leaf_gate_nn.h
 
 Run:
-  ../tinyengine/venv/bin/python emit_pest_gate_c_from_tflite.py
-  # or: ../tinyengine/venv/bin/python codegen_pest_gate_c.py
+  ../../tinyengine/venv/bin/python emit_pest_gate_c_from_tflite.py
+  # or: ../../tinyengine/venv/bin/python codegen_pest_gate_c.py
 """
 
 from __future__ import annotations
@@ -27,12 +27,23 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
-IKMAL = HERE.parent  # Ikmal/
+
+
+def find_ikmal(start: Path) -> Path:
+    for p in [start, *start.parents]:
+        if (p / "ACLIS_IKMAL").is_dir() and (p / "tinyengine").is_dir():
+            return p
+    raise FileNotFoundError(
+        "Could not find Ikmal/ (folder containing ACLIS_IKMAL/ and tinyengine/)."
+    )
+
+
+IKMAL = find_ikmal(HERE)
 TE = IKMAL / "tinyengine"
 TFLITE = HERE / "aclis_pest_gate_96x_full_int8.tflite"
-# Replace binary leaf-gate codegen in the live ACLIS project (same leaf_gate_* API).
-OUT = IKMAL / "ACLIS" / "Src" / "TinyEngine" / "codegen_leaf_gate"
-ACLIS_INC = IKMAL / "ACLIS" / "Inc"
+# Replace current gate codegen in ACLIS_IKMAL (same leaf_gate_* API).
+OUT = IKMAL / "ACLIS_IKMAL" / "Src" / "TinyEngine" / "codegen_leaf_gate"
+ACLIS_INC = IKMAL / "ACLIS_IKMAL" / "Inc"
 PREFIX = "leaf_gate_"
 # Short label embedded in generated C comments (override via --tflite / --label).
 TFLITE_LABEL = "aclis_pest_gate_96x_full_int8.tflite"

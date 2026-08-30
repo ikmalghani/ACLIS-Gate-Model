@@ -1,0 +1,15 @@
+metric,value
+model,better_gate_alt_96x
+overall_correct,3286
+overall_total,3454
+overall_accuracy_pct,95
+class_leaf_correct,1572
+class_leaf_total,1726
+class_leaf_accuracy_pct,91
+class_not_leaf_correct,1714
+class_not_leaf_total,1728
+class_not_leaf_accuracy_pct,99
+
+confusion_true_pred,pred_leaf,pred_not_leaf
+true_leaf,1572,154
+true_not_leaf,14,1714

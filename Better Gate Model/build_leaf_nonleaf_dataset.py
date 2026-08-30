@@ -6,13 +6,15 @@ Steps (in this order, as required):
   2. Undersample the majority class so both pools have the same count
   3. Only then split into train / val / test (stratified, equal per class)
 
-Default source is the 6-class PlantVillage tree (disease classes = leaf,
-`others` = non-leaf). The original PlantVillage train/val/test folders are
-flattened on purpose so the new split is made from the balanced pools.
+Default leaf source is AATBS `customized_dataset` (disease classes = leaf).
+Non-leaf images come from `Leaf Gate Model/leaf_noleaf_dataset` (`Non_Leaf`).
+The original train/val/test folders are flattened on purpose so the new split
+is made from the balanced pools.
 
 Usage:
   python build_leaf_nonleaf_dataset.py
   python build_leaf_nonleaf_dataset.py --source /path/to/plantvillage
+  python build_leaf_nonleaf_dataset.py --non-leaf-source /path/to/nonleaf
   python build_leaf_nonleaf_dataset.py --train 0.70 --val 0.15 --test 0.15
 """
 
@@ -51,7 +53,13 @@ HERE = Path(__file__).resolve().parent
 IKMAL = HERE.parent.parent
 DEFAULT_OUT = HERE / "leaf_nonleaf_dataset"
 
+DEFAULT_LEAF_SOURCE = IKMAL / "AATBS" / "customized_dataset"
+DEFAULT_NON_LEAF_SOURCE = (
+    IKMAL / "Gate Model" / "Leaf Gate Model" / "leaf_noleaf_dataset" / "Leaf v NonLeaf"
+)
+
 DEFAULT_SOURCES = [
+    DEFAULT_LEAF_SOURCE,
     IKMAL / "Better Plant Disease Classifier" / "6 Class Model" / "Plant Village Others Dataset",
     IKMAL / "Better Plant Disease Classifier" / "5 Class  Model" / "aclis_ready_plantvillage_dataset",
     IKMAL / "AATBS" / "aclis_ready_plantvillage_dataset",
@@ -169,6 +177,8 @@ def unique_dest(dest_dir: Path, src: Path, tag: str, used: set[str]) -> Path:
 
 
 def pick_default_source() -> Path:
+    if DEFAULT_LEAF_SOURCE.is_dir():
+        return DEFAULT_LEAF_SOURCE
     for cand in DEFAULT_SOURCES:
         if cand.is_dir():
             return cand
@@ -208,8 +218,8 @@ def main() -> None:
         skipped += extra_skipped
         found["non-leaf"].extend(extra["non-leaf"])
     elif not found["non-leaf"]:
-        # 5-class PlantVillage has only leaves; pull `others` from the 6-class tree.
-        for cand in DEFAULT_SOURCES:
+        nonleaf_candidates = [DEFAULT_NON_LEAF_SOURCE, *DEFAULT_SOURCES]
+        for cand in nonleaf_candidates:
             if cand.resolve() == source or not cand.is_dir():
                 continue
             extra, extra_skipped = collect_images(cand, label_filter="non-leaf")

@@ -20,7 +20,18 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-IKMAL = HERE.parent
+
+
+def find_ikmal(start: Path) -> Path:
+    for p in [start, *start.parents]:
+        if (p / "ACLIS_IKMAL").is_dir() and (p / "tinyengine").is_dir():
+            return p
+    raise FileNotFoundError(
+        "Could not find Ikmal/ (folder containing ACLIS_IKMAL/ and tinyengine/)."
+    )
+
+
+IKMAL = find_ikmal(HERE)
 EMIT = HERE / "emit_leaf_gate_c_from_tflite.py"
 TFLITE = HERE / "aclis_leaf_gate_96x_full_int8.tflite"
 PY = IKMAL / "tinyengine" / "venv" / "bin" / "python"

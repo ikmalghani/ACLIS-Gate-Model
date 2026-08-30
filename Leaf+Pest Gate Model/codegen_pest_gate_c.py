@@ -6,12 +6,12 @@ Targets:
   Leaf+Pest Gate Model/aclis_pest_gate_96x_full_int8.tflite
 
 Uses emit_pest_gate_c_from_tflite.py (3-class: leaf / others / pest).
-Keeps the `leaf_gate_*` C API and **replaces** ACLIS codegen_leaf_gate/
+Keeps the `leaf_gate_*` C API and **replaces** ACLIS_IKMAL codegen_leaf_gate/
 weights so main.cpp / .cproject stay compatible.
 
 Usage:
-  cd "Ikmal/Leaf+Pest Gate Model"
-  ../tinyengine/venv/bin/python codegen_pest_gate_c.py
+  cd "Ikmal/Gate Model/Leaf+Pest Gate Model"
+  ../../tinyengine/venv/bin/python codegen_pest_gate_c.py
 """
 
 from __future__ import annotations
@@ -21,7 +21,18 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-IKMAL = HERE.parent
+
+
+def find_ikmal(start: Path) -> Path:
+    for p in [start, *start.parents]:
+        if (p / "ACLIS_IKMAL").is_dir() and (p / "tinyengine").is_dir():
+            return p
+    raise FileNotFoundError(
+        "Could not find Ikmal/ (folder containing ACLIS_IKMAL/ and tinyengine/)."
+    )
+
+
+IKMAL = find_ikmal(HERE)
 EMIT = HERE / "emit_pest_gate_c_from_tflite.py"
 TFLITE = HERE / "aclis_pest_gate_96x_full_int8.tflite"
 PY = IKMAL / "tinyengine" / "venv" / "bin" / "python"
@@ -41,9 +52,9 @@ def main() -> None:
 
     print(f"TFLite : {TFLITE} ({TFLITE.stat().st_size / 1024:.1f} KB)")
     print(f"Emitter: {EMIT}")
-    print("\nInstalls into ACLIS (overwrites binary leaf-gate codegen):\n"
-          "  ACLIS/Src/TinyEngine/codegen_leaf_gate/\n"
-          "  ACLIS/Inc/leaf_gate_nn.h\n")
+    print("\nInstalls into ACLIS_IKMAL (overwrites current gate codegen):\n"
+          "  ACLIS_IKMAL/Src/TinyEngine/codegen_leaf_gate/\n"
+          "  ACLIS_IKMAL/Inc/leaf_gate_nn.h\n")
 
     py = str(PY if PY.is_file() else sys.executable)
     rc = subprocess.call(
@@ -62,15 +73,15 @@ def main() -> None:
     print(
         """
 Installed under:
-  ACLIS/Src/TinyEngine/codegen_leaf_gate/
-  ACLIS/Inc/leaf_gate_nn.h
+  ACLIS_IKMAL/Src/TinyEngine/codegen_leaf_gate/
+  ACLIS_IKMAL/Inc/leaf_gate_nn.h
 
 Classes: leaf=0, others=1, pest=2
 Cascade policy (main.cpp): disease CNN if leaf OR pest; skip if others.
 
 NEXT (STM32CubeIDE):
-  1. Refresh project (codegen_leaf_gate sources already in build)
-  2. Build & flash ACLIS
+  1. Refresh ACLIS_IKMAL (codegen_leaf_gate sources already in the 2-model build)
+  2. Build & flash ACLIS_IKMAL
 """
     )
 
